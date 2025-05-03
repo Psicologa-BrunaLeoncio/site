@@ -1,0 +1,614 @@
+<html><head><base href="/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Roteiros - Psicóloga Bruna Leoncio</title>
+<style>
+  /* Keeping existing styles */
+  :root {
+    --primary: #5C4033;
+    --secondary: #F5E6D3;
+    --text: #2C1810;
+    --accent1: #FFE4E1;
+    --accent2: #E8F3E8;
+    --white: #FFFFFF;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--secondary);
+  }
+
+  .navbar {
+    background-color: transparent;
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: none;
+  }
+
+  .logo {
+    height: 50px;
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-icons a {
+    color: var(--primary);
+    transition: transform 0.2s, color 0.2s;
+    padding: 8px;
+  }
+
+  .social-icons a:hover {
+    color: #4A3328;
+    transform: scale(1.1);
+  }
+
+  .content-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .scripts-display {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  .script-item {
+    background: var(--accent2);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+
+  .script-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .script-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .script-title {
+    color: var(--primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .platform-badge {
+    background: var(--primary);
+    color: var(--white);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+  }
+
+  .script-content {
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .script-date {
+    color: #666;
+    font-size: 0.875rem;
+  }
+
+  .footer {
+    margin-top: auto;
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 1rem 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  @font-face {
+    font-family: 'Ancherr';
+    src: url('https://47a2264cf938b2f3772dad3d38ac7503.cdn.bubble.io/f1730320259536x123703355772923680/Ancherr-Regular-PersonalUse.otf') format('opentype');
+  }
+
+  .fossio-force-link {
+    font-family: 'Ancherr', sans-serif;
+    font-size: 32px;
+    color: var(--secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .fossio-force-link:hover {
+    color: var(--accent1);
+  }
+
+  .search-bar {
+    margin-bottom: 2rem;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+
+  /* Additional styles for side menu */
+  .side-menu {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 400px;
+    height: 100vh;
+    background: var(--white);
+    box-shadow: -2px 0 15px rgba(0,0,0,0.1);
+    padding: 2rem;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  .side-menu.active {
+    right: 0;
+  }
+
+  .side-menu-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary);
+    cursor: pointer;
+  }
+
+  .script-detail-header {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--accent1);
+    padding-bottom: 1rem;
+  }
+
+  .script-thumbnail {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+
+  .script-metadata {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--accent2);
+    border-radius: 8px;
+  }
+
+  .script-full-content {
+    white-space: pre-line;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 999;
+  }
+
+  .overlay.active {
+    display: block;
+  }
+
+  .filter-select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    background-color: var(--white);
+    color: var(--text);
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  label {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Add these media queries to the existing CSS */
+
+  /* Mobile devices (portrait) */
+  @media screen and (max-width: 576px) {
+    .navbar {
+      flex-direction: row; /* Change to row since we don't have nav-links anymore */
+      gap: 1rem;
+      padding: 1rem 2%;
+    }
+
+    /* Remove the nav-links related styles */
+    .social-icons {
+      margin-top: 0; /* Remove margin since we don't need it anymore */
+    }
+
+    .content-container {
+      margin: 1rem auto;
+      padding: 0 0.5rem;
+    }
+
+    .scripts-display {
+      padding: 1rem;
+    }
+
+    .script-header {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    .side-menu {
+      width: 100%;
+      right: -100%;
+    }
+
+    .filter-select {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    div[style*="display: flex; gap: 1rem;"] {
+      flex-direction: column;
+    }
+
+    .script-item {
+      padding: 1rem;
+    }
+  }
+
+  /* Tablet devices */
+  @media screen and (min-width: 577px) and (max-width: 968px) {
+    .navbar {
+      padding: 1rem 3%;
+    }
+
+    .content-container {
+      max-width: 90%;
+    }
+
+    .side-menu {
+      width: 80%;
+      right: -80%;
+    }
+
+    div[style*="display: flex; gap: 1rem;"] {
+      gap: 0.5rem;
+    }
+  }
+
+  /* Larger screens */
+  @media screen and (min-width: 969px) {
+    .content-container {
+      max-width: 1200px;
+    }
+
+    .scripts-display {
+      padding: 2.5rem;
+    }
+  }
+
+  /* General responsive improvements */
+  .script-thumbnail {
+    height: auto;
+    max-height: 300px;
+  }
+
+  .filter-select {
+    min-width: 150px;
+  }
+
+  /* Improved touch targets for mobile */
+  @media (hover: none) {
+    .script-item,
+    .filter-select,
+    .search-bar,
+    .social-icons a {
+      padding: 0.8rem;
+    }
+
+    .social-icons a {
+      padding: 12px;
+    }
+  }
+
+  /* Better spacing for filter controls */
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Improved readability */
+  @media (max-width: 768px) {
+    .script-title {
+      font-size: 1.1rem;
+    }
+
+    .script-content {
+      font-size: 0.95rem;
+    }
+
+    .script-date {
+      font-size: 0.8rem;
+    }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <img src="https://75644c8c5689fc8b9f5372db2a74102c.cdn.bubble.io/f1732716038107x769017010222272600/download.png?_gl=1*1jlwvl2*_gcl_au*NjcxNjQxMDUuMTczMjcxNTY0Nw..*_ga*MTEzNTQzMjk4OC4xNzMyNzE1NjQ3*_ga_BFPVR2DEE2*MTczMjcxNTY0Ny4xLjEuMTczMjcxOTEzNy42MC4wLjA." alt="Logo do site" class="logo">
+    <div class="social-icons">
+      <a href="https://wa.me/5554991270566?text=Olá,%20gostaria%20de%20agendar%20uma%20consulta" target="_blank"><i class="fab fa-whatsapp fa-lg"></i></a>
+      <a href="https://www.instagram.com/psico.brunaleoncio/" target="_blank"><i class="fab fa-instagram fa-lg"></i></a>
+    </div>
+  </nav>
+
+  <div class="overlay" id="overlay"></div>
+  
+  <div class="side-menu" id="sideMenu">
+    <button class="side-menu-close" onclick="closeSideMenu()">×</button>
+    <div id="scriptDetail">
+      <!-- Content will be populated dynamically -->
+    </div>
+  </div>
+
+  <main class="content-container">
+    <div class="scripts-display">
+      <h1 style="color: var(--primary); margin-bottom: 1.5rem;">Roteiros de Vídeos</h1>
+      
+      <input type="text" class="search-bar" id="searchScripts" placeholder="Pesquisar roteiros...">
+      
+      <div class="filter-controls" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+        <div class="filter-group">
+          <label for="sortBy">Ordenar por:</label>
+          <select id="sortBy" class="filter-select">
+            <option value="date-desc">Data (Mais recente)</option>
+            <option value="date-asc">Data (Mais antiga)</option>
+            <option value="title">Título (A-Z)</option>
+            <option value="platform">Plataforma</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="filterPlatform">Plataforma:</label>
+          <select id="filterPlatform" class="filter-select">
+            <option value="all">Todas</option>
+            <option value="Instagram">Instagram</option>
+            <option value="YouTube">YouTube</option>
+            <option value="TikTok">TikTok</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterCategory">Categoria:</label>
+          <select id="filterCategory" class="filter-select">
+            <option value="all">Todas</option>
+            <option value="ansiedade">Ansiedade</option>
+            <option value="autoestima">Autoestima</option>
+            <option value="relacionamentos">Relacionamentos</option>
+            <option value="desenvolvimento">Desenvolvimento Pessoal</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterStatus">Status:</label>
+          <select id="filterStatus" class="filter-select">
+            <option value="all">Todos</option>
+            <option value="published">Publicado</option>
+            <option value="draft">Rascunho</option>
+            <option value="scheduled">Agendado</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="scriptsList">
+        <div class="script-item" onclick="showScriptDetails(1)">
+          <div class="script-header">
+            <h3 class="script-title">5 Dicas para Ansiedade</h3>
+            <span class="platform-badge">Instagram</span>
+          </div>
+          <div class="script-content">
+            Olá pessoal! Hoje vou compartilhar 5 dicas fundamentais para lidar com a ansiedade no dia a dia...
+          </div>
+          <div class="script-date">Criado em: 15/02/2024</div>
+        </div>
+
+        <div class="script-item" onclick="showScriptDetails(2)">
+          <div class="script-header">
+            <h3 class="script-title">Autoestima e Relacionamentos</h3>
+            <span class="platform-badge">YouTube</span>
+          </div>
+          <div class="script-content">
+            Neste vídeo, vamos explorar como a autoestima impacta nossos relacionamentos e como podemos melhorá-la...
+          </div>
+          <div class="script-date">Criado em: 14/02/2024</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="text-center">
+      <p class="mb-0" style="font-size: 16px;">
+        <span class="d-block d-md-inline">Powered by </span>
+        <a href="https://fossioforce.app.br" target="_blank" class="fossio-force-link">FOSSIO FORCE</a>
+        <span class="d-block d-md-inline">&copy; 2024 Todos os direitos reservados.</span>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Search functionality
+    function updateScriptsList() {
+      const searchTerm = document.getElementById('searchScripts').value.toLowerCase();
+      const sortBy = document.getElementById('sortBy').value;
+      const filterPlatform = document.getElementById('filterPlatform').value;
+      const filterCategory = document.getElementById('filterCategory').value;
+      const filterStatus = document.getElementById('filterStatus').value;
+
+      // Convert scriptsData object to array for easier manipulation
+      let scripts = Object.entries(scriptsData).map(([id, data]) => ({id, ...data}));
+
+      // Apply filters
+      scripts = scripts.filter(script => {
+        const matchesSearch = script.title.toLowerCase().includes(searchTerm) || 
+                             script.fullContent.toLowerCase().includes(searchTerm);
+        const matchesPlatform = filterPlatform === 'all' || script.platform === filterPlatform;
+        const matchesCategory = filterCategory === 'all' || script.category === filterCategory;
+        const matchesStatus = filterStatus === 'all' || script.status === filterStatus;
+
+        return matchesSearch && matchesPlatform && matchesCategory && matchesStatus;
+      });
+
+      // Apply sorting
+      scripts.sort((a, b) => {
+        switch(sortBy) {
+          case 'date-desc':
+            return new Date(b.date) - new Date(a.date);
+          case 'date-asc':
+            return new Date(a.date) - new Date(b.date);
+          case 'title':
+            return a.title.localeCompare(b.title);
+          case 'platform':
+            return a.platform.localeCompare(b.platform);
+          default:
+            return 0;
+        }
+      });
+
+      // Update DOM
+      const scriptsListElement = document.getElementById('scriptsList');
+      scriptsListElement.innerHTML = scripts.map(script => `
+        <div class="script-item" onclick="showScriptDetails(${script.id})">
+          <div class="script-header">
+            <h3 class="script-title">${script.title}</h3>
+            <span class="platform-badge">${script.platform}</span>
+          </div>
+          <div class="script-content">
+            ${script.fullContent.substring(0, 100)}...
+          </div>
+          <div class="script-date">Criado em: ${new Date(script.date).toLocaleDateString()}</div>
+        </div>
+      `).join('');
+    }
+
+    const scriptsData = {
+      1: {
+        title: "5 Dicas para Ansiedade",
+        platform: "Instagram",
+        thumbnail: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80",
+        fullContent: `Olá pessoal! Hoje vou compartilhar 5 dicas fundamentais para lidar com a ansiedade no dia a dia.
+
+1. Respiração consciente
+2. Exercício físico regular
+3. Alimentação equilibrada
+4. Sono de qualidade
+5. Terapia
+
+Vamos explorar cada uma dessas dicas detalhadamente...`,
+        date: "2024-02-15",
+        duration: "3:45",
+        tags: ["ansiedade", "saúde mental", "bem-estar"],
+        category: "ansiedade",
+        status: "published"
+      },
+      2: {
+        title: "Autoestima e Relacionamentos",
+        platform: "YouTube",
+        thumbnail: "https://images.unsplash.com/photo-1531747056595-07f6cbbe10ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+        fullContent: `Neste vídeo, vamos explorar como a autoestima impacta nossos relacionamentos e como podemos melhorá-la.
+
+Tópicos principais:
+- O que é autoestima?
+- Como ela afeta nossos relacionamentos
+- Exercícios práticos para melhorar
+- Quando buscar ajuda profissional`,
+        date: "2024-02-14",
+        duration: "12:30",
+        tags: ["autoestima", "relacionamentos", "desenvolvimento pessoal"],
+        category: "autoestima",
+        status: "published"
+      }
+    };
+
+    function showScriptDetails(id) {
+      const script = scriptsData[id];
+      const detailHTML = `
+        <div class="script-detail-header">
+          <h2 class="script-title">${script.title}</h2>
+          <span class="platform-badge">${script.platform}</span>
+        </div>
+        <img src="${script.thumbnail}" alt="${script.title}" class="script-thumbnail">
+        <div class="script-metadata">
+          <p><strong>Data:</strong> ${script.date}</p>
+          <p><strong>Duração:</strong> ${script.duration}</p>
+          <p><strong>Tags:</strong> ${script.tags.join(", ")}</p>
+        </div>
+        <div class="script-full-content">
+          ${script.fullContent}
+        </div>
+      `;
+      
+      document.getElementById('scriptDetail').innerHTML = detailHTML;
+      document.getElementById('sideMenu').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function closeSideMenu() {
+      document.getElementById('sideMenu').classList.remove('active');
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    // Add event listeners for all filters
+    document.getElementById('sortBy').addEventListener('change', updateScriptsList);
+    document.getElementById('filterPlatform').addEventListener('change', updateScriptsList);
+    document.getElementById('filterCategory').addEventListener('change', updateScriptsList);
+    document.getElementById('filterStatus').addEventListener('change', updateScriptsList);
+
+    // Update the existing search event listener
+    document.getElementById('searchScripts').addEventListener('input', updateScriptsList);
+
+    // Close side menu when clicking overlay
+    document.getElementById('overlay').addEventListener('click', closeSideMenu);
+
+    // Initial load
+    updateScriptsList();
+  </script>
+</body>
+</html>

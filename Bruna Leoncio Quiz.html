@@ -1,0 +1,845 @@
+<html><head><base href="/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz de Saúde Mental</title>
+<style>
+  @font-face {
+    font-family: 'Ancherr';
+    src: url('https://47a2264cf938b2f3772dad3d38ac7503.cdn.bubble.io/f1730320259536x123703355772923680/Ancherr-Regular-PersonalUse.otf') format('opentype');
+  }
+
+  :root {
+    --primary: #5C4033;
+    --secondary: #F5E6D3;
+    --text: #2C1810;
+    --accent1: #FFE4E1;
+    --accent2: #E8F3E8;
+    --white: #FFFFFF;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--accent1) 100%);
+  }
+
+  .quiz-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0; /* Remove default padding */
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(92, 64, 51, 0.2);
+    transform: translateY(0);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Add styles for the header image */
+  .header-image {
+    width: 100%;
+    height: 300px; /* Fixed height for desktop */
+    object-fit: cover;
+    border-radius: 15px 15px 0 0;
+    margin-bottom: 2rem;
+  }
+
+  .header-image.hidden {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .header-image {
+      height: auto; /* Allow natural height on mobile */
+    }
+  }
+
+  @media (min-width: 769px) {
+    .quiz-container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1200px; /* Increased max-width for better layout */
+    }
+
+    .header-image {
+      width: 50%;
+      height: 100%;
+      margin-bottom: 0;
+      border-radius: 15px 0 0 15px;
+    }
+
+    #welcome {
+      width: 50%;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Hide flex layout for other questions */
+    .question:not(#welcome) {
+      width: 100%;
+    }
+  }
+
+  /* Adjust mobile styles to ensure proper stacking */
+  @media (max-width: 768px) {
+    .quiz-container {
+      display: block;
+    }
+
+    .header-image {
+      width: 100%;
+      border-radius: 15px 15px 0 0;
+      margin-bottom: 2rem;
+    }
+
+    #welcome {
+      width: 100%;
+      padding: 0 2rem;
+    }
+  }
+
+  .quiz-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent1), var(--primary));
+    animation: loading 2s ease infinite;
+  }
+
+  @keyframes loading {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .question {
+    margin-bottom: 2rem;
+    display: none;
+    animation: fadeIn 0.5s ease;
+    padding: 2rem; /* Add consistent padding for all questions */
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .question.active {
+    display: block;
+  }
+
+  .quiz-container.started {
+    display: block !important;
+    max-width: 800px;
+  }
+
+  .question:not(.active) {
+    display: none !important;
+  }
+
+  .question h2 {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .back-icon {
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .back-icon:hover {
+    transform: translateX(-3px);
+  }
+
+  .question h2::before {
+    content: none;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .option {
+    padding: 1.2rem 1.2rem 1.2rem 3.5rem; /* Increased left padding for emoji */
+    background: var(--accent2);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .option .emoji {
+    position: absolute;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+    background-color: var(--primary);
+    opacity: 0.1;
+    transition: width 0.3s ease;
+  }
+
+  .option:hover::before {
+    width: 100%;
+  }
+
+  .option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(92, 64, 51, 0.2);
+  }
+
+  .option.selected {
+    background: var(--primary);
+    color: var(--white);
+    transform: scale(1.02);
+  }
+
+  .navigation {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .btn {
+    padding: 1rem 2rem;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+  }
+
+  .btn:hover::after {
+    width: 200px;
+    height: 200px;
+  }
+
+  .btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  .result {
+    text-align: center;
+    display: none;
+    animation: fadeIn 0.5s ease;
+    padding: 0 2rem; /* Add padding to inner content */
+  }
+
+  .result.active {
+    display: block;
+  }
+
+  .result h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+  }
+
+  .result p {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    color: var(--text);
+  }
+
+  .footer {
+    margin-top: auto;
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+  }
+
+  .fossio-force-link {
+    font-size: 32px;
+    font-family: 'Ancherr', sans-serif;
+    color: var(--secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    letter-spacing: 1px;
+  }
+
+  .fossio-force-link:hover {
+    color: var(--accent1);
+    text-shadow: 0 0 10px rgba(255,255,255,0.3);
+  }
+
+  @media (max-width: 768px) {
+    .quiz-container {
+      margin: 1rem;
+    }
+    
+    .question {
+      padding: 1.5rem; /* Ensure proper padding on mobile */
+    }
+    
+    .quiz-container.started .question {
+      padding: 1.5rem; /* Ensure proper padding on mobile */
+    }
+  }
+
+  .start-btn {
+    margin: 2rem auto;
+    display: block;
+    font-size: 1.2rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 1rem;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(92, 64, 51, 0.2);
+  }
+
+  .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .submit-btn {
+    margin: 0 auto;
+    display: block;
+  }
+
+  .psychologist-info {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent1) 100%);
+    box-shadow: 0 4px 15px rgba(92, 64, 51, 0.15);
+  }
+
+  .psychologist-info h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--white) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+
+  .psychologist-info h3 {
+    font-size: 1.2rem;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .psychologist-info h1 {
+      font-size: 1.5rem;
+    }
+    
+    .psychologist-info h3 {
+      font-size: 1rem;
+    }
+  }
+
+  .alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 30px;
+    background: var(--primary);
+    color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: none;
+    animation: slideDown 0.3s ease forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      top: -100px;
+      opacity: 0;
+    }
+    to {
+      top: 20px;
+      opacity: 1;
+    }
+  }
+
+  .loading-spinner {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--secondary);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    margin: 20px auto;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .thank-you {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .thank-you h2 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
+  .thank-you p {
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .thank-you.active {
+    display: block;
+  }
+
+  /* Add these styles to fix the button in the thank you screen */
+  .thank-you .btn {
+    display: inline-block;
+    text-decoration: none;
+    margin: 1rem auto;
+    padding: 1rem 2rem;
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .thank-you .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(92, 64, 51, 0.2);
+  }
+
+  .thank-you .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+  }
+
+  .thank-you .btn:hover::after {
+    width: 200px;
+    height: 200px;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="quiz-container">
+    <img src="https://75644c8c5689fc8b9f5372db2a74102c.cdn.bubble.io/f1732737164718x242104248545925060/WhatsApp%20Image%202024-11-11%20at%2010.33.44.jpeg?_gl=1*1pxud5i*_gcl_au*NjcxNjQxMDUuMTczMjcxNTY0Nw..*_ga*MTEzNTQzMjk4OC4xNzMyNzE1NjQ3*_ga_BFPVR2DEE2*MTczMjcxNTY0Ny4xLjEuMTczMjczNDQzMy42MC4wLjA." 
+     alt="Welcome Image" 
+     class="header-image">
+    <div id="welcome" class="question active">
+      <div class="psychologist-info">
+        <h1>Psicóloga Bruna Leoncio</h1>
+        <h3>CRP 07/27803</h3>
+      </div>
+      <h2>Bem-vindo(a)!</h2>
+      <p>Este quiz rápido ajudará a entender suas necessidades e como a Psicóloga Bruna Leoncio pode te ajudar. Vamos começar?</p>
+      <button class="btn start-btn" onclick="startQuiz()">
+        Começar Quiz <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <div id="question1" class="question">
+      <h2>
+        <i class="fas fa-chevron-left back-icon" onclick="previousQuestion()" style="display: none;"></i>
+        1. O que te trouxe até aqui?
+      </h2>
+      <div class="options">
+        <div class="option" onclick="selectOption(this, 1)">
+          <span class="emoji">😰</span>
+          Ansiedade ou estresse constantes
+        </div>
+        <div class="option" onclick="selectOption(this, 1)">
+          <span class="emoji">🤔</span>
+          Dificuldade em lidar com emoções
+        </div>
+        <div class="option" onclick="selectOption(this, 1)">
+          <span class="emoji">💔</span>
+          Problemas de relacionamento
+        </div>
+        <div class="option" onclick="selectOption(this, 1)">
+          <span class="emoji">✨</span>
+          Outro motivo
+        </div>
+      </div>
+    </div>
+
+    <div id="question2" class="question">
+      <h2>
+        <i class="fas fa-chevron-left back-icon" onclick="previousQuestion()" style="display: none;"></i>
+        2. Você já fez terapia antes?
+      </h2>
+      <div class="options">
+        <div class="option" onclick="selectOption(this, 2)">
+          <span class="emoji">🎯</span>
+          Sim, atualmente faço terapia
+        </div>
+        <div class="option" onclick="selectOption(this, 2)">
+          <span class="emoji">⏰</span>
+          Sim, mas faz tempo que parei
+        </div>
+        <div class="option" onclick="selectOption(this, 2)">
+          <span class="emoji">🌟</span>
+          Não, será minha primeira experiência
+        </div>
+      </div>
+    </div>
+
+    <div id="question3" class="question">
+      <h2>
+        <i class="fas fa-chevron-left back-icon" onclick="previousQuestion()" style="display: none;"></i>
+        3. Com que frequência você sente que precisa de apoio emocional?
+      </h2>
+      <div class="options">
+        <div class="option" onclick="selectOption(this, 3)">
+          <span class="emoji">📅</span>
+          Quase todos os dias
+        </div>
+        <div class="option" onclick="selectOption(this, 3)">
+          <span class="emoji">📊</span>
+          Algumas vezes na semana
+        </div>
+        <div class="option" onclick="selectOption(this, 3)">
+          <span class="emoji">🕐</span>
+          De vez em quando
+        </div>
+      </div>
+    </div>
+
+    <div id="question4" class="question">
+      <h2>
+        <i class="fas fa-chevron-left back-icon" onclick="previousQuestion()" style="display: none;"></i>
+        4. Qual sua disponibilidade para consultas?
+      </h2>
+      <div class="options">
+        <div class="option" onclick="selectOption(this, 4)">
+          <span class="emoji">🏢</span>
+          Durante o horário comercial
+        </div>
+        <div class="option" onclick="selectOption(this, 4)">
+          <span class="emoji">🌙</span>
+          Após o horário comercial
+        </div>
+        <div class="option" onclick="selectOption(this, 4)">
+          <span class="emoji">📆</span>
+          Apenas finais de semana
+        </div>
+      </div>
+    </div>
+
+    <div id="question5" class="question">
+      <h2>
+        <i class="fas fa-chevron-left back-icon" onclick="previousQuestion()" style="display: none;"></i>
+        5. Você prefere atendimento presencial ou online?
+      </h2>
+      <div class="options">
+        <div class="option" onclick="selectOption(this, 5)">
+          <span class="emoji">🏠</span>
+          Presencial
+        </div>
+        <div class="option" onclick="selectOption(this, 5)">
+          <span class="emoji">💻</span>
+          Online
+        </div>
+      </div>
+    </div>
+
+    <div id="contact-form" class="question">
+      <h2>Informações de Contato</h2>
+      <p>Para entrar na lista de espera, precisamos de algumas informações básicas. Prometemos cuidar bem dos seus dados!</p>
+      <div class="form-group">
+        <input type="text" id="name" placeholder="Nome completo" required>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="tel" id="phone" placeholder="Telefone/WhatsApp" required>
+        <textarea id="additionalInfo" placeholder="Conte-nos um pouco mais sobre sua necessidade (opcional)"></textarea>
+      </div>
+      <button class="btn submit-btn" onclick="submitForm()">
+        Enviar <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+
+    <div class="result">
+      <h2>Resultado da Sua Avaliação</h2>
+      <p id="resultText"></p>
+      <a href="https://wa.me/5554991270566?text=Olá,%20fiz%20o%20quiz%20e%20gostaria%20de%20agendar%20uma%20consulta" target="_blank" class="btn">Agendar Consulta</a>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="text-center">
+      <p class="mb-0" style="font-size: 16px;">
+        <span class="d-block d-md-inline">Powered by </span>
+        <a href="https://fossioforce.app.br" target="_blank" class="fossio-force-link">FOSSIO FORCE</a>
+        <span class="d-block d-md-inline">&copy; 2024 Todos os direitos reservados.</span>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    let currentQuestion = 0;
+    let answers = [];
+    const totalQuestions = 5; // Number of questions before contact form
+
+    function startQuiz() {
+        document.getElementById('welcome').classList.remove('active');
+        document.getElementById('question1').classList.add('active');
+        document.querySelector('.header-image').classList.add('hidden');
+        document.querySelector('.quiz-container').classList.add('started');
+        currentQuestion = 1;
+        updateNavigationButtons();
+    }
+
+    function selectOption(element, questionNumber) {
+        // Remove selected class from all options in the current question
+        const options = element.parentElement.getElementsByClassName('option');
+        Array.from(options).forEach(option => option.classList.remove('selected'));
+        
+        // Add selected class to clicked option
+        element.classList.add('selected');
+        answers[questionNumber - 1] = element.textContent.trim();
+        
+        // Auto advance after a brief delay
+        setTimeout(() => {
+            const currentQuestionElement = document.querySelector('.question.active');
+            if (currentQuestionElement && currentQuestion <= totalQuestions) {
+                currentQuestionElement.classList.remove('active');
+                currentQuestion++;
+
+                if (currentQuestion <= totalQuestions) {
+                    // Show next question
+                    const nextQuestionElement = document.getElementById(`question${currentQuestion}`);
+                    if (nextQuestionElement) {
+                        nextQuestionElement.classList.add('active');
+                    }
+                } else if (currentQuestion === totalQuestions + 1) {
+                    // Show contact form
+                    const contactForm = document.getElementById('contact-form');
+                    if (contactForm) {
+                        contactForm.classList.add('active');
+                    }
+                }
+                updateNavigationButtons();
+            }
+        }, 500);
+    }
+
+    function previousQuestion() {
+        const currentElement = document.querySelector('.question.active');
+        if (!currentElement) return;
+
+        currentElement.classList.remove('active');
+        currentQuestion--;
+
+        if (currentQuestion >= 1) {
+            const prevQuestion = document.getElementById(`question${currentQuestion}`);
+            if (prevQuestion) {
+                prevQuestion.classList.add('active');
+            }
+        }
+
+        updateNavigationButtons();
+    }
+
+    function updateNavigationButtons() {
+        const backIcons = document.querySelectorAll('.back-icon');
+        if (backIcons) {
+            backIcons.forEach(icon => {
+                icon.style.display = currentQuestion <= 1 ? 'none' : 'block';
+            });
+        }
+    }
+
+    function showAlert(message, type = 'error') {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'alert';
+      alertDiv.textContent = message;
+      document.body.appendChild(alertDiv);
+      alertDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        alertDiv.style.display = 'none';
+        alertDiv.remove();
+      }, 3000);
+    }
+
+    function showLoading() {
+      const spinner = document.createElement('div');
+      spinner.className = 'loading-spinner';
+      document.querySelector('.form-group').appendChild(spinner);
+      spinner.style.display = 'block';
+    }
+
+    function hideLoading() {
+      const spinner = document.querySelector('.loading-spinner');
+      if (spinner) {
+        spinner.remove();
+      }
+    }
+
+    async function submitForm() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const additionalInfo = document.getElementById('additionalInfo').value;
+
+      if (!name || !email || !phone) {
+        showAlert('Por favor, preencha todos os campos obrigatórios.');
+        return;
+      }
+
+      const formData = {
+        name,
+        email,
+        phone,
+        additionalInfo,
+        answers
+      };
+
+      showLoading();
+
+      try {
+        // Simulate API call with timeout
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Simulate API response
+        const response = {
+          success: true,
+          message: 'Dados enviados com sucesso!'
+        };
+
+        if (response.success) {
+          hideLoading();
+          showThankYouScreen();
+        } else {
+          throw new Error('Falha ao enviar dados');
+        }
+      } catch (error) {
+        hideLoading();
+        showAlert('Ocorreu um erro ao enviar seus dados. Por favor, tente novamente.');
+      }
+    }
+
+    function showThankYouScreen() {
+      // Hide contact form
+      const contactForm = document.getElementById('contact-form');
+      contactForm.classList.remove('active');
+
+      // Show thank you screen
+      const thankYouHtml = `
+        <div class="thank-you active">
+          <h2>Obrigado por compartilhar sua jornada!</h2>
+          <p>Suas informações foram recebidas com sucesso. Em breve entraremos em contato para dar continuidade ao seu processo terapêutico.</p>
+          <a href="https://wa.me/5554991270566?text=Olá,%20fiz%20o%20quiz%20e%20gostaria%20de%20agendar%20uma%20consulta" 
+             target="_blank" 
+             class="btn">
+             Iniciar Conversa no WhatsApp
+          </a>
+        </div>
+      `;
+      
+      const quizContainer = document.querySelector('.quiz-container');
+      const existingThankYou = document.querySelector('.thank-you');
+      
+      if (!existingThankYou) {
+        quizContainer.insertAdjacentHTML('beforeend', thankYouHtml);
+      } else {
+        existingThankYou.classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>
