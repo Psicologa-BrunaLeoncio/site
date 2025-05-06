@@ -155,6 +155,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 40px;
   }
 
   .back-icon {
@@ -511,6 +512,19 @@
     width: 200px;
     height: 200px;
   }
+
+@media (min-width: 769px) {
+  .header-image {
+    height: auto;
+    max-height: 560px;
+    object-fit: cover;
+  }
+
+  .quiz-container {
+    align-items: center;
+  }
+}
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -673,31 +687,56 @@
     let currentQuestion = 0;
     let answers = [];
     const totalQuestions = 5; // Number of questions before contact form
+    const questionsText = [
+      "O que te trouxe até aqui?",
+      "Você já fez terapia antes?",
+      "Com que frequência você sente que precisa de apoio emocional?",
+      "Qual sua disponibilidade para consultas?",
+      "Você prefere atendimento presencial ou online?"
+    ];
 
     function startQuiz() {
         document.getElementById('welcome').classList.remove('active');
-        document.getElementById('question1').classList.add('active');
         document.querySelector('.header-image').classList.add('hidden');
+        // Hide the entire welcome section on desktop (fix for previously reported bug)
+        document.getElementById('welcome').style.display = 'none';
+        document.getElementById('question1').classList.add('active');
         document.querySelector('.quiz-container').classList.add('started');
         currentQuestion = 1;
         updateNavigationButtons();
+        ensureMarginTopQuiz(); // fix margins on desktop after quiz start
     }
+
+    // Margin fix after quiz starts (especially for desktop)
+    function ensureMarginTopQuiz() {
+      const quizContainer = document.querySelector('.quiz-container');
+      if (window.innerWidth > 768) {
+        quizContainer.style.marginTop = "2rem";
+      } else {
+        quizContainer.style.marginTop = ""; // remove override on mobile
+      }
+    }
+
+    window.addEventListener('resize', ensureMarginTopQuiz);
 
     function selectOption(element, questionNumber) {
         // Remove selected class from all options in the current question
         const options = element.parentElement.getElementsByClassName('option');
         Array.from(options).forEach(option => option.classList.remove('selected'));
-        
+
         // Add selected class to clicked option
         element.classList.add('selected');
         answers[questionNumber - 1] = element.textContent.trim();
-        
+
         // Auto advance after a brief delay
         setTimeout(() => {
             const currentQuestionElement = document.querySelector('.question.active');
             if (currentQuestionElement && currentQuestion <= totalQuestions) {
                 currentQuestionElement.classList.remove('active');
                 currentQuestion++;
+
+                // Remove focus from all options to avoid lingering :focus styles
+                Array.from(document.querySelectorAll('.option')).forEach(opt => opt.blur());
 
                 if (currentQuestion <= totalQuestions) {
                     // Show next question
@@ -737,22 +776,24 @@
     function updateNavigationButtons() {
         const backIcons = document.querySelectorAll('.back-icon');
         if (backIcons) {
-            backIcons.forEach(icon => {
-                icon.style.display = currentQuestion <= 1 ? 'none' : 'block';
+            backIcons.forEach((icon, idx) => {
+                icon.style.display = (currentQuestion <= 1) ? 'none' : 'block';
             });
         }
     }
 
+    // Application alert (custom, not browser-native)
     function showAlert(message, type = 'error') {
-      const alertDiv = document.createElement('div');
-      alertDiv.className = 'alert';
+      let alertDiv = document.querySelector('.alert');
+      if (!alertDiv) {
+          alertDiv = document.createElement('div');
+          alertDiv.className = 'alert';
+          document.body.appendChild(alertDiv);
+      }
       alertDiv.textContent = message;
-      document.body.appendChild(alertDiv);
       alertDiv.style.display = 'block';
-      
       setTimeout(() => {
         alertDiv.style.display = 'none';
-        alertDiv.remove();
       }, 3000);
     }
 
@@ -770,43 +811,63 @@
       }
     }
 
+    // SUPABASE API Integration
     async function submitForm() {
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      const additionalInfo = document.getElementById('additionalInfo').value;
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const additionalInfo = document.getElementById('additionalInfo').value.trim();
 
       if (!name || !email || !phone) {
         showAlert('Por favor, preencha todos os campos obrigatórios.');
         return;
       }
+      // Map answer array to question/answer object
+      const quiz_respostas = {};
+      for (let i = 0; i < totalQuestions; i++) {
+        quiz_respostas[questionsText[i]] = answers[i] || '';
+      }
 
-      const formData = {
-        name,
-        email,
-        phone,
-        additionalInfo,
-        answers
+      const dataToSend = {
+        nome_completo: name,
+        email: email,
+        telefone: phone,
+        mensagem: additionalInfo,
+        quiz_respostas: quiz_respostas
       };
 
       showLoading();
 
       try {
-        // Simulate API call with timeout
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Simulate API response
-        const response = {
-          success: true,
-          message: 'Dados enviados com sucesso!'
-        };
+        const supabaseUrl = "https://hlkawnhbsyytixmkmllu.supabase.co/rest/v1/lista_de_espera";
+        const anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhsa2F3bmhic3l5dGl4bWttbGx1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjMwNzgyNiwiZXhwIjoyMDYxODgzODI2fQ.UrJ9JTsEvqBVCcx7JuXY907UAMsDa0JYkBR1Zey2ozA";
 
-        if (response.success) {
-          hideLoading();
-          showThankYouScreen();
-        } else {
-          throw new Error('Falha ao enviar dados');
+        const response = await fetch(supabaseUrl, {
+          method: "POST",
+          headers: {
+            "apikey": anonKey,
+            "Authorization": `Bearer ${anonKey}`,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify(dataToSend)
+        });
+
+        hideLoading();
+
+        if (!response.ok) {
+          let errorMsg = 'Ocorreu um erro ao enviar seus dados.';
+          try {
+            const errorData = await response.json();
+            if (errorData && errorData.message) errorMsg = errorData.message;
+          } catch {}
+          showAlert(errorMsg);
+          return;
         }
+
+        // Sucesso:
+        showThankYouScreen();
+
       } catch (error) {
         hideLoading();
         showAlert('Ocorreu um erro ao enviar seus dados. Por favor, tente novamente.');
@@ -817,6 +878,10 @@
       // Hide contact form
       const contactForm = document.getElementById('contact-form');
       contactForm.classList.remove('active');
+
+      // Remove any possible lingering thank you screens
+      const prev = document.querySelector('.thank-you');
+      if (prev) prev.remove();
 
       // Show thank you screen
       const thankYouHtml = `
@@ -830,15 +895,8 @@
           </a>
         </div>
       `;
-      
       const quizContainer = document.querySelector('.quiz-container');
-      const existingThankYou = document.querySelector('.thank-you');
-      
-      if (!existingThankYou) {
-        quizContainer.insertAdjacentHTML('beforeend', thankYouHtml);
-      } else {
-        existingThankYou.classList.add('active');
-      }
+      quizContainer.insertAdjacentHTML('beforeend', thankYouHtml);
     }
   </script>
 </body>
