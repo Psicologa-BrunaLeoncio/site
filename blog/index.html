@@ -176,7 +176,7 @@
         }
 
         .blog-content h3 {
-            color: var(--primary-pink);
+            color: #2C1810;
             margin-bottom: 0.5rem;
         }
 
@@ -612,104 +612,7 @@
 
             // Only proceed if required elements exist
             if (blogDetail && closeBtn && blogCards.length > 0) {
-                // Updated blog data
-                const blogData = {
-                    blog1: {
-                        title: "O Poder do Autoconhecimento",
-                        image: "https://images.unsplash.com/photo-1517093728432-a0440f8d45af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                        content: `
-                            <h2>Introdução ao Autoconhecimento</h2>
-                            <p>O autoconhecimento é a base fundamental para nosso desenvolvimento pessoal e bem-estar emocional. É através dele que podemos compreender melhor nossos padrões de comportamento, emoções e pensamentos.</p>
-                            
-                            <h2>1. Por que o Autoconhecimento é Importante?</h2>
-                            <p>O processo de autoconhecimento nos permite:</p>
-                            <ul>
-                                <li>Tomar decisões mais conscientes</li>
-                                <li>Desenvolver relacionamentos mais saudáveis</li>
-                                <li>Identificar e trabalhar padrões limitantes</li>
-                                <li>Aumentar a autoestima e autoconfiança</li>
-                                <li>Melhorar a saúde mental e emocional</li>
-                            </ul>
-                            
-                            <h2>2. Ferramentas para o Autoconhecimento</h2>
-                            <p>Existem diversas técnicas que podem auxiliar nessa jornada:</p>
-                            <ul>
-                                <li>Terapia e acompanhamento psicológico</li>
-                                <li>Práticas de mindfulness e meditação</li>
-                                <li>Journaling e escrita reflexiva</li>
-                                <li>Feedback de pessoas próximas</li>
-                                <li>Exercícios de autoavaliação</li>
-                            </ul>
-                            
-                            <h2>3. O Processo de Autodescoberta</h2>
-                            <p>A jornada do autoconhecimento é contínua e envolve:</p>
-                            <ul>
-                                <li>Reconhecimento de padrões emocionais</li>
-                                <li>Identificação de valores pessoais</li>
-                                <li>Compreensão de traumas e experiências passadas</li>
-                                <li>Desenvolvimento de autoconsciência</li>
-                                <li>Aceitação e amor próprio</li>
-                            </ul>
-                        `
-                    },
-                    blog2: {
-                        title: "Lidando com a Ansiedade no Mundo Moderno",
-                        image: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                        content: `
-                            <h2>Compreendendo a Ansiedade</h2>
-                            <p>A ansiedade é uma resposta natural do organismo, mas pode se tornar um problema quando interfere em nossa qualidade de vida. Entender seus mecanismos é o primeiro passo para gerenciá-la melhor.</p>
-
-                            <h2>1. Sinais e Sintomas</h2>
-                            <p>Manifestações comuns da ansiedade:</p>
-                            <ul>
-                                <li>Alterações físicas (taquicardia, sudorese)</li>
-                                <li>Pensamentos recorrentes e preocupações</li>
-                                <li>Dificuldades de concentração</li>
-                                <li>Alterações no sono</li>
-                                <li>Tensão muscular</li>
-                            </ul>
-
-                            <h2>2. Estratégias de Gerenciamento</h2>
-                            <p>Técnicas eficazes para lidar com a ansiedade:</p>
-                            <ul>
-                                <li>Técnicas de respiração e relaxamento</li>
-                                <li>Prática regular de exercícios físicos</li>
-                                <li>Estabelecimento de rotinas saudáveis</li>
-                                <li>Terapia e acompanhamento profissional</li>
-                                <li>Mindfulness e meditação</li>
-                            </ul>
-                        `
-                    },
-                    blog3: {
-                        title: "Construindo Relacionamentos Saudáveis",
-                        image: "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                        content: `
-                            <h2>A Importância dos Vínculos Saudáveis</h2>
-                            <p>Relacionamentos saudáveis são fundamentais para nossa saúde mental e bem-estar emocional. Aprender a construí-los e mantê-los é uma habilidade essencial.</p>
-
-                            <h2>1. Elementos de Relacionamentos Saudáveis</h2>
-                            <p>Características fundamentais:</p>
-                            <ul>
-                                <li>Comunicação clara e assertiva</li>
-                                <li>Respeito mútuo e empatia</li>
-                                <li>Estabelecimento de limites</li>
-                                <li>Confiança e honestidade</li>
-                                <li>Apoio emocional recíproco</li>
-                            </ul>
-
-                            <h2>2. Desenvolvendo Habilidades Relacionais</h2>
-                            <p>Competências importantes:</p>
-                            <ul>
-                                <li>Escuta ativa e acolhimento</li>
-                                <li>Expressão adequada de sentimentos</li>
-                                <li>Resolução construtiva de conflitos</li>
-                                <li>Desenvolvimento de empatia</li>
-                                <li>Autoconsciência emocional</li>
-                            </ul>
-                        `
-                    }
-                };
-
+               
                 // Handle window resize
                 window.addEventListener('resize', () => {
                     const width = window.innerWidth;
