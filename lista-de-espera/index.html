@@ -840,13 +840,13 @@
 
       try {
         const supabaseUrl = "https://hlkawnhbsyytixmkmllu.supabase.co/rest/v1/lista_de_espera";
-        const anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhsa2F3bmhic3l5dGl4bWttbGx1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjMwNzgyNiwiZXhwIjoyMDYxODgzODI2fQ.UrJ9JTsEvqBVCcx7JuXY907UAMsDa0JYkBR1Zey2ozA";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhsa2F3bmhic3l5dGl4bWttbGx1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjMwNzgyNiwiZXhwIjoyMDYxODgzODI2fQ.UrJ9JTsEvqBVCcx7JuXY907UAMsDa0JYkBR1Zey2ozA";
 
         const response = await fetch(supabaseUrl, {
           method: "POST",
           headers: {
-            "apikey": anonKey,
-            "Authorization": `Bearer ${anonKey}`,
+            "apikey": supabaseKey,
+            "Authorization": `Bearer ${supabaseKey}`,
             "Content-Type": "application/json",
             "Prefer": "return=representation"
           },
