@@ -12,7 +12,6 @@ const preloadStyle = `
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
-  overflow: hidden;
   background-color: var(--white);
 }
 
@@ -27,7 +26,6 @@ body {
   flex-direction: column;
   z-index: 9999;
   transition: opacity 0.5s ease, visibility 0.5s ease;
-  overflow: hidden;
 }
 
 #preload-container.hidden {
@@ -41,10 +39,6 @@ body {
   position: relative;
   pointer-events: none;
   user-select: none;
-}
-
-#preload-text div {
-  display: block;
 }
 
 #preload-text span {
@@ -72,22 +66,6 @@ body {
   border-radius: 50%;
   opacity: 0.6;
   animation: floatUp 6s ease-in infinite;
-  pointer-events: none;
-}
-.preload-bubble:nth-child(2n) {
-  background-color: var(--accent2);
-  animation-duration: 7s;
-  opacity: 0.5;
-}
-.preload-bubble:nth-child(3n) {
-  background-color: var(--primary);
-  opacity: 0.4;
-  animation-duration: 8s;
-}
-.preload-bubble:nth-child(4n) {
-  background-color: var(--accent1);
-  opacity: 0.7;
-  animation-duration: 5s;
 }
 
 @keyframes floatUp {
@@ -112,7 +90,10 @@ document.head.appendChild(styleTag);
 // ==== 2. Injetar HTML do Preloader ====
 const preloadHTML = `
 <div id="preload-container">
-  <div id="preload-text"></div>
+  <div id="preload-text">
+    <span>PSICÓLOGA</span>
+    <span>Bruna Leoncio</span>
+  </div>
   ${Array.from({ length: 12 }).map(() => '<div class="preload-bubble"></div>').join('')}
 </div>
 `;
@@ -120,42 +101,29 @@ document.body.insertAdjacentHTML('afterbegin', preloadHTML);
 
 // ==== 3. JavaScript funcional ====
 const preloadContainer = document.getElementById('preload-container');
-const preloadTextContainer = document.getElementById('preload-text');
-const bubbles = document.querySelectorAll('.preload-bubble');
-
-const line1 = "PSICÓLOGA";
-const line2 = "Bruna Leoncio";
-
-function createAnimatedText(text, delayOffset) {
-  const div = document.createElement('div');
-  text.split('').forEach((char, i) => {
-    const span = document.createElement('span');
-    span.textContent = char;
-    span.style.animationDelay = `${delayOffset + i * 0.05}s`;
-    div.appendChild(span);
-  });
-  return div;
-}
-
-function randomizeBubbles() {
-  bubbles.forEach(bubble => {
-    bubble.style.left = `${Math.random() * 100}vw`;
-    bubble.style.setProperty('--random-x', (Math.random() - 0.5) * 2);
-    bubble.style.animationDelay = `${Math.random() * 3}s`;
-    bubble.style.animationDuration = `${6 + (Math.random() * 3 - 1.5)}s`;
-  });
-}
 
 function hidePreloader() {
   preloadContainer.classList.add('hidden');
   setTimeout(() => {
     preloadContainer.remove();
-    document.body.style.overflow = '';
-  }, 500);
+    document.body.style.overflow = ''; // Restaura o scroll
+    console.log('Preloader removido e scroll restaurado.'); // Log para verificar
+  }, 500); // Tempo para ocultar o preloader
 }
 
-document.body.style.overflow = 'hidden';
-randomizeBubbles();
-preloadTextContainer.appendChild(createAnimatedText(line1, 0));
-preloadTextContainer.appendChild(createAnimatedText(line2, line1.length * 0.05));
-setTimeout(hidePreloader, 3500);
+// Define um tempo mínimo de 3 segundos para o preloader
+const minDisplayTime = 3000; // 3 segundos
+let loadTime = 0;
+
+// Registra o tempo de início
+const startTime = Date.now();
+
+// Adiciona um evento para ocultar o preloader quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
+  loadTime = Date.now() - startTime; // Calcula o tempo de carregamento
+  if (loadTime < minDisplayTime) {
+    setTimeout(hidePreloader, minDisplayTime - loadTime); // Aguarda o tempo restante
+  } else {
+    hidePreloader(); // Oculta imediatamente se já passou de 3 segundos
+  }
+});
