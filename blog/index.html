@@ -1,12 +1,12 @@
 <html>
 <head>
-    <base href="/site/">
+    <base href="/blog/">
     <title>Psicologa Bruna Leoncio - Blog</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/site/blog/blog.js" defer></script>
+    <script src="blog.js" defer></script>
     <style>
         :root {
             --primary-pink: #F5E6D3; /* Changed from #C00054 to dark brown */
@@ -32,6 +32,24 @@
 
         html {
             scroll-behavior: smooth;
+        }
+
+        /* Preloader styles */
+        #preload-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #preload-container.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
 
         .navbar {
@@ -440,17 +458,18 @@
         .blog-content-full {
             font-size: 1.1rem;
             color: var(--text);
+            line-height: 1.6; /* Aumentar o espaçamento entre linhas */
+            white-space: pre-wrap; /* Respeitar quebras de linha */
+        }
+
+        .blog-content-full p {
+            margin-bottom: 1.5rem; /* Espaçamento entre parágrafos */
         }
 
         .blog-content-full h2 {
             color: var(--primary-pink);
             margin: 2rem 0 1rem;
             font-size: 1.8rem;
-        }
-
-        .blog-content-full p {
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
         }
 
         .no-results {
@@ -512,7 +531,7 @@
         .blog-category {
             display: inline-block;
             background-color: var(--accent1);
-            color: var(--primary-pink);
+            color: #2C1810; /* Cor mais escura para melhor contraste */
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 0.8rem;
@@ -555,7 +574,28 @@
     </style>
 </head>
 <body>
+    <div id="preload-container">
+        <div id="preload-text">
+            <span>PSICÓLOGA</span>
+            <span>Bruna Leoncio</span>
+        </div>
+    </div>
+
     <script>
+        // Função para ocultar o preloader
+        function hidePreloader() {
+            const preloadContainer = document.getElementById('preload-container');
+            preloadContainer.classList.add('hidden');
+            setTimeout(() => {
+                preloadContainer.remove();
+            }, 500);
+        }
+
+        // Chame hidePreloader quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', () => {
+            hidePreloader(); // Oculta o preloader imediatamente após o carregamento
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             // Utility function for toggling body scroll
             function toggleBodyScroll(disable) {
@@ -636,10 +676,10 @@
                 // Blog card click handler
                 blogCards.forEach(card => {
                     card.addEventListener('click', () => {
-                        const sku = card.dataset.sku;
-                        console.log('Blog card clicked:', sku); // Debug log
-                        window.history.pushState({}, '', `?sku=${sku}`);
-                        showBlogDetail(sku);
+                        const id = card.dataset.id; // Aqui, id é o identificador correto
+                        console.log('Blog card clicked with ID:', id); // Adicione esta linha para depuração
+                        window.history.pushState({}, '', `/blog?id=${id}`); // Passando o id na URL
+                        openBlogDetail(id); // Chame a função para abrir o detalhe
                     });
                 });
 
@@ -690,7 +730,7 @@
                         // Update content
                         document.querySelector('.blog-detail-image').src = blog.image;
                         document.querySelector('.blog-title').textContent = blog.title;
-                        document.querySelector('.blog-content-full').innerHTML = blog.content;
+                        blogDetailContent.innerHTML = blog.content ? blog.content.replace(/\n/g, '<br>') : '';
                         
                         // Show blog detail
                         blogDetail.classList.add('active');
@@ -782,9 +822,9 @@
                     const blogCards = document.querySelectorAll('.blog-card');
                     blogCards.forEach(card => {
                         card.addEventListener('click', () => {
-                            const sku = card.dataset.sku;
-                            window.history.pushState({}, '', `?sku=${sku}`);
-                            showBlogDetail(sku);
+                            const id = card.dataset.id;
+                            window.history.pushState({}, '', `/blog?id=${id}`);
+                            showBlogDetail(id);
                         });
                     });
                 }
@@ -846,11 +886,34 @@
                     setTimeout(() => notification.remove(), 300);
                 }, duration);
             }
+
+            async function openDetailFromURL() {
+                const url = new URL(window.location);
+                const matches = url.pathname.match(/^\/blog\/([^/?#]+)/);
+                const slug = matches ? matches[1] : null; // Captura a slug
+
+                if (slug) {
+                    // Tente buscar o post usando a slug
+                    const { data, error } = await supabase
+                        .from('v_posts_blog_com_categorias')
+                        .select('*')
+                        .eq('slug', slug) // Filtra pela slug
+                        .limit(1);
+
+                    const post = data && data[0];
+                    if (post) {
+                        openBlogDetail(post); // Chame a função para abrir o detalhe
+                    } else {
+                        // Post desconhecido, fallback
+                        showNotification("Post não encontrado ou removido.");
+                    }
+                }
+            }
         });
     </script>
     <nav class="navbar">
         <div class="navbar-content">
-            <a href="./" class="logo">
+            <a href="/" class="logo">
                 <img src="https://75644c8c5689fc8b9f5372db2a74102c.cdn.bubble.io/f1732716038107x769017010222272600/download.png" 
                      alt="Bruna Leoncio - Psicóloga" 
                      width="150" 
@@ -862,8 +925,8 @@
                 <span></span>
             </div>
             <div class="nav-links">
-                <a href="./" style="color: brown;">Início</a>
-                <a href="/site/links" style="color: brown;">Links</a>
+                <a href="/" style="color: brown;">Início</a>
+                <a href="/links/" style="color: brown;">Links</a>
             </div>
         </div>
     </nav>

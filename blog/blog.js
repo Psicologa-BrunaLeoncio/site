@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         shareBtns.forEach(btn => {
             btn.onclick = () => {
                 const platform = btn.dataset.platform;
-                const postUrl = `${window.location.origin}/blog/${post.slug}?id=${post.id}`;
+                const postUrl = `${window.location.origin}/blog/${post.slug}`;
                 const title = post.titulo;
                 switch (platform) {
                     case 'whatsapp':
@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
         });
+
+        console.log('Post ID:', post.id);
     }
 
     // Close overlay handler
@@ -105,26 +107,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Detect overlay open on direct URL
-    async function openDetailFromURL() {
-        const url = new URL(window.location);
-        const matches = url.pathname.match(/^\/blog\/([^/?#]+)/);
-        const slug = matches ? matches[1] : null;
-        const id = url.searchParams.get('id');
-        if (slug) {
-            // Try to fetch the post using the slug
-            const { data, error } = await supabase
-                .from('v_posts_blog_com_categorias')
-                .select('*')
-                .eq('slug', slug)
-                .limit(1);
+    async function openDetailFromURL(slug) {
+        const { data, error } = await supabase
+            .from('v_posts_blog_com_categorias')
+            .select('*')
+            .eq('slug', slug)
+            .limit(1);
 
-            const post = data && data[0];
-            if (post) {
-                openBlogDetail(post);
-            } else {
-                // Unknown post, fallback
-                showNotification("Post não encontrado ou removido.");
-            }
+        const post = data && data[0];
+        if (post) {
+            openBlogDetail(post); // Exibe os detalhes do post
+        } else {
+            showNotification("Post não encontrado ou removido.");
         }
     }
 
@@ -137,11 +131,18 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadCategories();
         await loadPosts(categoryParam);
 
-        // If in detail view (/blog/slug)
-        if (/^\/blog\/[^/?#]+/.test(window.location.pathname)) {
-            await openDetailFromURL();
+        // Verifique se há um path após /blog/
+        const urlPath = window.location.pathname;
+        const matches = urlPath.match(/^\/blog\/([^/?#]+)/);
+        const slug = matches ? matches[1] : null;
+
+        if (slug) {
+            // Se houver uma slug, busque o post correspondente
+            await openDetailFromURL(slug);
+        } else {
+            // Se não houver slug, exiba a lista de blogs
+            updateUI(); // Chame a função para atualizar a interface com a lista de blogs
         }
-        setupEventListeners();
     }
 
     async function loadCategories() {
@@ -201,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
         blogState.posts.forEach(post => {
             const card = document.createElement('article');
             card.className = 'blog-card';
-            card.dataset.id = post.id;
             card.dataset.slug = post.slug;
             const dataPub = new Date(post.publicado_em).toLocaleDateString('pt-BR');
             card.innerHTML = `
@@ -217,7 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             card.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.history.pushState({}, '', `/blog/${post.slug}?id=${post.id}`);
+                console.log('Opening post with slug:', post.slug);
+                window.history.pushState({}, '', `/blog/${post.slug}`);
                 openBlogDetail(post);
             });
             blogGrid.appendChild(card);
@@ -305,7 +306,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             card.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.history.pushState({}, '', `/blog/${post.slug}?id=${post.id}`);
+                console.log('Opening post with slug:', post.slug);
+                window.history.pushState({}, '', `/blog/${post.slug}`);
                 openBlogDetail(post);
             });
             blogGrid.appendChild(card);
