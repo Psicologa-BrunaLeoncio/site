@@ -86,8 +86,10 @@
   }
 
   .profile-img {
-    width: 150px;
-    height: 150px;
+    width: auto;
+    height: auto;
+    max-width: 150px;
+    max-height: 150px;
     border-radius: 50%;
     margin-bottom: 1rem;
     border: 3px solid var(--primary);
@@ -189,12 +191,11 @@
 </head>
 <body>
   <nav class="navbar">
-    <img src="https://75644c8c5689fc8b9f5372db2a74102c.cdn.bubble.io/f1732716038107x769017010222272600/download.png?_gl=1*1jlwvl2*_gcl_au*NjcxNjQxMDUuMTczMjcxNTY0Nw..*_ga*MTEzNTQzMjk4OC4xNzMyNzE1NjQ3*_ga_BFPVR2DEE2*MTczMjcxNTY0Ny4xLjEuMTczMjcxOTEzNy42MC4wLjA." alt="Logo do site" class="logo">
+    <img src="/midias/logo-260x60.png" alt="Logo do site" class="logo">
     <div class="nav-links">
-      <a href="site/">Início</a>
-      <a href="site/lista-de-espera/">Lista de espera</a>
-      <a href="site/blog/">Blog</a>
-
+      <a href="/">Início</a>
+      <a href="/lista-de-espera/">Lista de espera</a>
+      <a href="/blog/">Blog</a>
     </div>
     <div class="social-icons">
       <a href="https://wa.me/5554991270566?text=Olá,%20gostaria%20de%20agendar%20uma%20consulta" target="_blank"><i class="fab fa-whatsapp fa-lg"></i></a>
@@ -204,7 +205,7 @@
 
   <main class="bio-links-container">
     <div class="profile">
-      <img src="https://75644c8c5689fc8b9f5372db2a74102c.cdn.bubble.io/f1732719274491x654586859210129000/0010_BB_12052023_BrunaLeoncio__1_-removebg-preview.png?_gl=1*1i8z6m9*_gcl_au*NjcxNjQxMDUuMTczMjcxNTY0Nw..*_ga*MTEzNTQzMjk4OC4xNzMyNzE1NjQ3*_ga_BFPVR2DEE2*MTczMjcxNTY0Ny4xLjEuMTczMjcxOTEzNy42MC4wLjA." 
+      <img src="/midias/links-hero.png" 
            alt="Psicóloga Bruna Leoncio"
            class="profile-img">
       <h1>Bruna Leoncio</h1>
@@ -217,7 +218,7 @@
         <span>Agendar Consulta</span>
       </a>
 
-      <a href="site/lista-de-espera" class="link-card">
+      <a href="/lista-de-espera" class="link-card">
         <i class="fas fa-clipboard-list"></i>
         <span>Lista de Espera</span>
       </a>
@@ -227,7 +228,7 @@
         <span>Me siga no Instagram</span>
       </a>
 
-      <a href="site/blog" class="link-card">
+      <a href="/blog" class="link-card">
         <i class="fas fa-blog"></i>
         <span>Blog</span>
       </a>
@@ -244,7 +245,7 @@
     </div>
   </footer>
 
-  <script src="/caminho/para/preloader.js" defer></script>
+  <script src="preloader.js" defer></script>
 
 </body>
 </html>
