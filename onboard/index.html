@@ -1215,7 +1215,7 @@
                     >
                 </div>
                 <div class="filter-container">
-                    <select class="filter-select" id="canalSelect" onchange="filterPosts('canal', this.value)">
+                    <select id="canalSelect" class="filter-select" onchange="filterPosts('canal', this.value)">
                         <option value="">Todos os Canais</option>
                         ${canaisData.length > 0 ? canaisData.map(canal => `
                             <option value="${canal.id}">${canal.nome}</option>
@@ -1400,15 +1400,15 @@
     
     function filterPosts(type, value) {
         if (!value) {
-            renderPosts(postsData);
+            renderPosts(postsData); // Se nenhum canal for selecionado, renderiza todos os posts
             return;
         }
         
-        const filtered = postsData.filter(post => {
-            if (type === 'canal') return post.canal_nome === value;
+        const filteredPosts = postsData.filter(post => {
+            if (type === 'canal') return post.canal_id === value; // Filtra pelos canais
             return true;
         });
-        renderPosts(filtered);
+        renderPosts(filteredPosts); // Renderiza os posts filtrados
     }
     
     const leadsData = [
@@ -2275,9 +2275,20 @@
 
             canaisData = await response.json();
             console.log(canaisData); // Verifique se os dados estão corretos
+            renderCanalSelect(); // Chame a função para renderizar o dropdown
         } catch (error) {
             console.error('Error fetching canais:', error);
         }
+    }
+
+    function renderCanalSelect() {
+        const canalSelect = document.getElementById('canalSelect');
+        canalSelect.innerHTML = `
+            <option value="">Todos os Canais</option>
+            ${canaisData.length > 0 ? canaisData.map(canal => `
+                <option value="${canal.id}">${canal.nome}</option>
+            `).join('') : '<option value="">Nenhum canal disponível</option>'}
+        `;
     }
     </script>
     </body></html>
