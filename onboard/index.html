@@ -1828,18 +1828,28 @@
     }
     
     async function handlePostUpdate(event, postId) {
+<<<<<<< HEAD
         event.preventDefault(); // Previne o comportamento padrão do formulário
+=======
+        event.preventDefault();
+>>>>>>> da648a9ac3020cd803608aa25078f294f89c7067
 
         const formData = {
             titulo: document.getElementById('titulo').value,
             mensagem: document.getElementById('mensagem').value,
             canal_id: document.getElementById('canal_id').value,
             status: document.getElementById('status').value,
+<<<<<<< HEAD
             atualizado_em: new Date().toISOString() // Certifique-se de que este campo está sendo enviado
         };
 
         console.log('Dados do formulário:', formData); // Log dos dados do formulário
 
+=======
+            atualizado_em: new Date().toISOString()
+        };
+
+>>>>>>> da648a9ac3020cd803608aa25078f294f89c7067
         try {
             const response = await fetch(`${supabaseUrl}/rest/v1/posts_sociais?id=eq.${postId}`, {
                 method: 'PATCH',
@@ -1852,6 +1862,7 @@
                 body: JSON.stringify(formData)
             });
 
+<<<<<<< HEAD
             console.log('Resposta da API:', await response.json()); // Log da resposta
 
             if (!response.ok) throw new Error('Failed to update post');
@@ -1859,6 +1870,12 @@
             console.log('Post atualizado com sucesso'); // Log de sucesso
             fetchPosts(); // Recarrega os posts
             closeSideMenu(); // Fecha o side menu
+=======
+            if (!response.ok) throw new Error('Failed to update post');
+
+            fetchPosts(); // Recarrega os posts
+            closeSideMenu();
+>>>>>>> da648a9ac3020cd803608aa25078f294f89c7067
         } catch (error) {
             console.error('Error updating post:', error);
             alert('Erro ao atualizar o post. Tente novamente.');
@@ -2296,4 +2313,8 @@
         `;
     }
     </script>
+<<<<<<< HEAD
     </body></html>
+=======
+    </body></html>
+>>>>>>> da648a9ac3020cd803608aa25078f294f89c7067
