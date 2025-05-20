@@ -1,0 +1,1032 @@
+<html>
+<head>
+    <base href="/blog/">
+    <title>Psicologa Bruna Leoncio - Blog</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    
+<!-- SEO Essencial -->
+<meta name="description" content="Bruna Leoncio é psicóloga especializada em Terapia Cognitivo-Comportamental com atendimento online e presencial em São Marcos - RS. Também atua com foco em profissionais do setor tributário.">
+<meta name="keywords" content="psicóloga em São Marcos, terapia online, psicologia clínica, terapia para tributaristas, psicóloga Bruna Leoncio, TCC, terapia cognitivo-comportamental, psicóloga especializada, saúde mental, terapia individual, psicóloga para profissionais do direito, psicóloga para contadores">
+<meta name="author" content="Psicóloga Bruna Leoncio">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="/">
+
+<!-- Open Graph para redes sociais (Facebook, LinkedIn etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Psicóloga Bruna Leoncio">
+<meta property="og:title" content="Psicóloga Bruna Leoncio | Atendimento em São Marcos - RS e Online">
+<meta property="og:description" content="Com mais de 10 anos de experiência, Bruna Leoncio oferece psicoterapia com abordagem em TCC, acolhendo demandas de pacientes em geral e profissionais da área tributária.">
+<meta property="og:image" content="/midias/og-image.png">
+<meta property="og:url" content="/">
+
+<!-- Twitter Cards (opcional, mas recomendado) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Psicóloga Bruna Leoncio | Psicoterapia Online e em São Marcos - RS">
+<meta name="twitter:description" content="Psicóloga especializada em TCC com foco em terapia para profissionais da área tributária. Atendimentos online e presenciais.">
+<meta name="twitter:image" content="https://www.brunaleonciopsicologa.com.br/midias/og-image.png">
+
+<!-- Favicon e ícones -->
+<link rel="icon" type="image/png" sizes="40x40" href="midias/favicon-40x40.png">
+<link rel="icon" type="image/png" sizes="120x120" href="midias/favicon-120x120.png">
+<link rel="apple-touch-icon" sizes="180x180" href="midias/favicon-180x180.png">
+
+    <!-- Comentário sobre o desenvolvimento -->
+    <!-- Site desenvolvido por FOSSIO FORCE - https://fossioforce.com.br -->
+    <!-- Desenvolvedor - Fossio -->
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="blog.js" defer></script>
+    <style>
+        :root {
+            --primary-pink: #F5E6D3; /* Changed from #C00054 to dark brown */
+            --light-pink: #5C4033; /* Changed from #F8CEDA to light beige */
+            --white: #FFFFFF;
+            
+            /* Adding new color variables */
+            --text: #2C1810;
+            --accent1: #FFE4E1;
+            --accent2: #E8F3E8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--white);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Preloader styles */
+        #preload-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #preload-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .navbar {
+            background-color: var(--primary-pink);
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+            max-width: 150px;
+            vertical-align: middle;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--white);
+            margin: 2px 0;
+            transition: 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .nav-links {
+            display: flex;
+            position: relative;
+            right: 0;
+            width: auto;
+            height: auto;
+            background: transparent;
+            padding: 0;
+            flex-direction: row;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a {
+            margin: 0 1rem;
+            font-size: 16px;
+            color: var(--white);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .hero {
+            position: relative;
+            height: 60vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                    url('midias/blog-banner-2240x1260.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .blog-controls {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 200px 200px;
+            gap: 1rem;
+        }
+
+        .search-box, .filter-select, .sort-select {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .blog-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            background-color: var(--accent2);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 1rem;
+        }
+
+        .blog-content h3 {
+            color: #2C1810;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-content p {
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        footer {
+            height: 90px;
+            position: relative;
+            padding-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bg-dark {
+            background-color: var(--primary-pink) !important;
+        }
+
+        @font-face {
+            font-family: 'Ancherr';
+            src: url('https://47a2264cf938b2f3772dad3d38ac7503.cdn.bubble.io/f1730320259536x123703355772923680/Ancherr-Regular-PersonalUse.otf') format('opentype');
+        }
+
+        .fossio-force-link {
+            font-family: 'Ancherr', sans-serif;
+            font-size: 32px;
+            color: var(--light-pink);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .fossio-force-link:hover,
+        .fossio-force-link:active {
+            font-size: 38px;
+            color: var(--white);
+        }
+
+        footer p {
+            margin: 0;
+            text-align: center;
+        }
+
+        .surprise-icon {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.15;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+            text-align: center;
+        }
+
+        .surprise-icon:hover {
+            opacity: 0.3;
+        }
+
+        .surprise-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text);
+        }
+
+        @media (max-width: 1200px) {
+            .blog-grid {
+                padding: 1rem 2rem;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .blog-controls {
+                padding: 0 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero {
+                height: 50vh;
+            }
+            
+            .hero-content {
+                padding: 0 1rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 28px;
+            }
+            
+            .blog-detail-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--primary-pink);
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem 0;
+                z-index: 1000;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links a {
+                margin: 1rem 0;
+                font-size: 18px;
+            }
+            
+            .blog-controls {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .blog-title {
+                font-size: 1.8rem;
+            }
+            
+            .share-buttons {
+                flex-direction: row; /* Keep horizontal layout on mobile */
+                justify-content: center;
+                gap: 1.5rem; /* Slightly reduce gap on mobile */
+            }
+            
+            .share-btn {
+                width: auto; /* Remove full width setting */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 24px;
+            }
+            
+            .hero-content p {
+                font-size: 16px;
+            }
+            
+            .blog-card {
+                margin: 0 1rem;
+            }
+            
+            .blog-detail-content {
+                padding: 1rem;
+            }
+            
+            .blog-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        .blog-detail {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100vh;
+            background: var(--white);
+            transition: 0.3s ease-in-out;
+            overflow-y: auto;
+            z-index: 1000;
+            scroll-behavior: smooth; /* Add smooth scrolling */
+            -webkit-overflow-scrolling: touch; /* Improved scroll on iOS */
+        }
+
+        .blog-detail.active {
+            right: 0;
+        }
+
+        .blog-detail-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+            padding-bottom: 4rem; /* Add extra padding at bottom for better scroll experience */
+        }
+
+        .blog-detail-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .blog-title {
+            font-size: 2.5rem;
+            color: var(--primary-pink);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1100;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .blog-detail.active + .close-btn {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .close-btn:hover {
+            background: var(--light-pink);
+            color: var(--primary-pink);
+            transform: rotate(90deg);
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            justify-content: center;
+            flex-direction: row; /* Ensure horizontal layout */
+        }
+
+        .share-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .blog-content-full {
+            font-size: 1.1rem;
+            color: var(--text);
+            line-height: 1.6; /* Aumentar o espaçamento entre linhas */
+            white-space: pre-wrap; /* Respeitar quebras de linha */
+        }
+
+        .blog-content-full p {
+            margin-bottom: 1.5rem; /* Espaçamento entre parágrafos */
+        }
+
+        .blog-content-full h2 {
+            color: var(--primary-pink);
+            margin: 2rem 0 1rem;
+            font-size: 1.8rem;
+        }
+
+        .no-results {
+            color: var(--primary-pink);
+            font-size: 1.2rem;
+            background-color: var(--light-pink);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        /* Add this CSS for custom notifications */
+        .custom-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary-pink);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 9999;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .custom-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .custom-notification .close-notification {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0 5px;
+            font-size: 18px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .custom-notification .close-notification:hover {
+            opacity: 1;
+        }
+
+        @media (min-width: 769px) {
+            .hamburger {
+                display: none;
+            }
+        }
+
+        /* Add styles for blog category labels */
+        .blog-category {
+            display: inline-block;
+            background-color: var(--accent1);
+            color: #2C1810; /* Cor mais escura para melhor contraste */
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            margin-top: 0.8rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .blog-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .loading-indicator {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--primary-pink);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .loading-indicator i {
+            font-size: 2rem;
+        }
+
+        .hero {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="preload-container">
+        <div id="preload-text">
+            <span>PSICÓLOGA</span>
+            <span>Bruna Leoncio</span>
+        </div>
+    </div>
+
+    <script>
+        // Função para ocultar o preloader
+        function hidePreloader() {
+            const preloadContainer = document.getElementById('preload-container');
+            preloadContainer.classList.add('hidden');
+            setTimeout(() => {
+                preloadContainer.remove();
+            }, 500);
+        }
+
+        // Chame hidePreloader quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', () => {
+            hidePreloader(); // Oculta o preloader imediatamente após o carregamento
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Utility function for toggling body scroll
+            function toggleBodyScroll(disable) {
+                document.body.style.overflow = disable ? 'hidden' : 'auto';
+            }
+
+            // Hamburger menu functionality
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            const navLinksItems = document.querySelectorAll('.nav-links a');
+
+            const isMobile = () => window.innerWidth <= 768;
+
+            // Only apply mobile menu behavior if elements exist
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent event bubbling
+                    hamburger.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                    toggleBodyScroll(navLinks.classList.contains('active'));
+                });
+
+                // Close menu when clicking a link on mobile
+                if (navLinksItems) {
+                    navLinksItems.forEach(link => {
+                        link.addEventListener('click', () => {
+                            if (isMobile()) {
+                                hamburger.classList.remove('active');
+                                navLinks.classList.remove('active');
+                                toggleBodyScroll(false);
+                            }
+                        });
+                    });
+                }
+
+                // Close menu when clicking outside on mobile
+                document.addEventListener('click', (e) => {
+                    if (isMobile() && 
+                        navLinks.classList.contains('active') && 
+                        !hamburger.contains(e.target) && 
+                        !navLinks.contains(e.target)) {
+                        hamburger.classList.remove('active');
+                        navLinks.classList.remove('active');
+                        toggleBodyScroll(false);
+                    }
+                });
+            }
+
+            // Blog functionality
+            const blogDetail = document.querySelector('.blog-detail');
+            const closeBtn = document.querySelector('.close-btn');
+            const blogCards = document.querySelectorAll('.blog-card');
+            const shareButtons = document.querySelectorAll('.share-btn');
+
+            // Only proceed if required elements exist
+            if (blogDetail && closeBtn && blogCards.length > 0) {
+               
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    const width = window.innerWidth;
+                    const blogDetail = document.querySelector('.blog-detail');
+                    if (blogDetail.classList.contains('active')) {
+                        if (width <= 768) {
+                            blogDetail.style.width = '100%';
+                        } else {
+                            blogDetail.style.width = '80%';
+                        }
+                    }
+                });
+
+                // Handle URL parameters on page load
+                const urlParams = new URLSearchParams(window.location.search);
+                const skuParam = urlParams.get('sku');
+                if (skuParam && blogData[skuParam]) {
+                    showBlogDetail(skuParam);
+                }
+
+                // Blog card click handler
+                blogCards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const id = card.dataset.id; // Aqui, id é o identificador correto
+                        console.log('Blog card clicked with ID:', id); // Adicione esta linha para depuração
+                        window.history.pushState({}, '', `/blog?id=${id}`); // Passando o id na URL
+                        openBlogDetail(id); // Chame a função para abrir o detalhe
+                    });
+                });
+
+                // Close button handler
+                closeBtn.addEventListener('click', () => {
+                    blogDetail.classList.remove('active');
+                    closeBtn.style.opacity = '0';
+                    closeBtn.style.pointerEvents = 'none';
+                    window.history.pushState({}, '', window.location.pathname);
+                    
+                    // Restore body scroll when blog detail is closed
+                    document.body.style.overflow = 'auto';
+                });
+
+                // Share buttons handler
+                shareButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const platform = btn.dataset.platform;
+                        const currentUrl = window.location.href;
+                        const title = document.querySelector('.blog-title').textContent;
+
+                        switch(platform) {
+                            case 'whatsapp':
+                                window.open(`https://wa.me/?text=${encodeURIComponent(title + ' ' + currentUrl)}`);
+                                break;
+                            case 'facebook':
+                                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`);
+                                break;
+                            case 'twitter':
+                                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`);
+                                break;
+                            case 'copy':
+                                navigator.clipboard.writeText(currentUrl)
+                                    .then(() => showNotification('Link copiado para a área de transferência!'));
+                                break;
+                        }
+                    });
+                });
+
+                // Update the showBlogDetail function
+                function showBlogDetail(sku) {
+                    console.log('Showing blog detail for:', sku); // Debug log
+                    const blog = blogData[sku];
+                    if (blog) {
+                        // Reset scroll position of blog detail container
+                        blogDetail.scrollTo(0, 0);
+                        
+                        // Update content
+                        document.querySelector('.blog-detail-image').src = blog.image;
+                        document.querySelector('.blog-title').textContent = blog.title;
+                        blogDetailContent.innerHTML = blog.content ? blog.content.replace(/\n/g, '<br>') : '';
+                        
+                        // Show blog detail
+                        blogDetail.classList.add('active');
+                        closeBtn.style.opacity = '1';
+                        closeBtn.style.pointerEvents = 'all';
+                        
+                        // Prevent body scroll when blog detail is open
+                        document.body.style.overflow = 'hidden';
+                        
+                        console.log('Blog detail shown'); // Debug log
+                    }
+                }
+
+                // Function for filtering and sorting blogs
+                const searchBox = document.querySelector('.search-box');
+                const filterSelect = document.querySelector('.filter-select');
+                const sortSelect = document.querySelector('.sort-select');
+                const blogGrid = document.querySelector('.blog-grid');
+
+                // Store the original blog cards for filtering
+                const originalBlogCards = Array.from(document.querySelectorAll('.blog-card'));
+
+                // Unified function to filter and sort blogs
+                function updateBlogDisplay() {
+                    let filteredBlogs = [...originalBlogCards];
+                    
+                    // Apply search filter
+                    const searchTerm = searchBox.value.toLowerCase();
+                    if (searchTerm) {
+                        filteredBlogs = filteredBlogs.filter(card => {
+                            const title = card.querySelector('h3').textContent.toLowerCase();
+                            const content = card.querySelector('p').textContent.toLowerCase();
+                            return title.includes(searchTerm) || content.includes(searchTerm);
+                        });
+                    }
+                    
+                    // Apply category filter
+                    const selectedCategory = filterSelect.value;
+                    if (selectedCategory) {
+                        filteredBlogs = filteredBlogs.filter(card => {
+                            const title = card.querySelector('h3').textContent.toLowerCase();
+                            const content = card.querySelector('p').textContent.toLowerCase();
+                            return title.includes(selectedCategory) || content.includes(selectedCategory);
+                        });
+                    }
+                    
+                    // Apply sorting
+                    const sortOption = sortSelect.value;
+                    filteredBlogs.sort((a, b) => {
+                        const titleA = a.querySelector('h3').textContent;
+                        const titleB = b.querySelector('h3').textContent;
+                        
+                        switch(sortOption) {
+                            case 'recent':
+                                return originalBlogCards.indexOf(a) - originalBlogCards.indexOf(b);
+                            case 'old':
+                                return originalBlogCards.indexOf(b) - originalBlogCards.indexOf(a);
+                            case 'title':
+                                return titleA.localeCompare(titleB);
+                            default:
+                                return 0;
+                        }
+                    });
+                    
+                    // Clear the blog grid
+                    blogGrid.innerHTML = '';
+                    
+                    // Display filtered and sorted blogs
+                    if (filteredBlogs.length === 0) {
+                        const noResults = document.createElement('div');
+                        noResults.className = 'no-results';
+                        noResults.style.textAlign = 'center';
+                        noResults.style.gridColumn = '1 / -1';
+                        noResults.style.padding = '2rem';
+                        noResults.innerHTML = '<h3>Nenhum resultado encontrado</h3>';
+                        blogGrid.appendChild(noResults);
+                    } else {
+                        filteredBlogs.forEach(card => {
+                            blogGrid.appendChild(card.cloneNode(true));
+                        });
+                        
+                        // Reattach click listeners to the new cards
+                        attachBlogCardListeners();
+                    }
+                }
+
+                // Function to attach click listeners to blog cards
+                function attachBlogCardListeners() {
+                    const blogCards = document.querySelectorAll('.blog-card');
+                    blogCards.forEach(card => {
+                        card.addEventListener('click', () => {
+                            const id = card.dataset.id;
+                            window.history.pushState({}, '', `/blog?id=${id}`);
+                            showBlogDetail(id);
+                        });
+                    });
+                }
+
+                // Add event listeners for search, filter, and sort
+                searchBox.addEventListener('input', updateBlogDisplay);
+                filterSelect.addEventListener('change', updateBlogDisplay);
+                sortSelect.addEventListener('change', updateBlogDisplay);
+
+                // Initial display
+                updateBlogDisplay();
+
+                // Handle browser back/forward buttons
+                window.addEventListener('popstate', () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const sku = urlParams.get('sku');
+                    if (sku && blogData[sku]) {
+                        showBlogDetail(sku);
+                    } else {
+                        blogDetail.classList.remove('active');
+                    }
+                });
+            }
+
+            // Add this utility function for notifications
+            function showNotification(message, duration = 3000) {
+                // Remove any existing notifications
+                const existingNotification = document.querySelector('.custom-notification');
+                if (existingNotification) {
+                    existingNotification.remove();
+                }
+
+                // Create new notification
+                const notification = document.createElement('div');
+                notification.className = 'custom-notification';
+                notification.innerHTML = `
+                    <span>${message}</span>
+                    <button class="close-notification">&times;</button>
+                `;
+
+                // Add notification to DOM
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+
+                // Add close button functionality
+                const closeBtn = notification.querySelector('.close-notification');
+                closeBtn.addEventListener('click', () => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                });
+
+                // Auto-hide after duration
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, duration);
+            }
+
+            async function openDetailFromURL() {
+                const url = new URL(window.location);
+                const matches = url.pathname.match(/^\/blog\/([^/?#]+)/);
+                const slug = matches ? matches[1] : null; // Captura a slug
+
+                if (slug) {
+                    // Tente buscar o post usando a slug
+                    const { data, error } = await supabase
+                        .from('v_posts_blog_com_categorias')
+                        .select('*')
+                        .eq('slug', slug) // Filtra pela slug
+                        .limit(1);
+
+                    const post = data && data[0];
+                    if (post) {
+                        openBlogDetail(post); // Chame a função para abrir o detalhe
+                    } else {
+                        // Post desconhecido, fallback
+                        showNotification("Post não encontrado ou removido.");
+                    }
+                }
+            }
+        });
+    </script>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="logo">
+                <img src="/midias/logo-260x60.png" 
+                     alt="Bruna Leoncio - Psicóloga" 
+                     width="150" 
+                     height="50">
+            </a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="/" style="color: brown;">Início</a>
+                <a href="/links/" style="color: brown;">Links</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Saúde Mental e Bem-Estar</h1>
+            <p>Reflexões e insights sobre psicologia, autoconhecimento e desenvolvimento pessoal</p>
+        </div>
+    </section>
+
+    <div class="blog-controls">
+        <input type="text" class="search-box" placeholder="Pesquisar artigos...">
+        <select class="filter-select">
+            <option value="">Todas as categorias</option>
+        </select>
+        <select class="sort-select">
+            <option value="recent">Mais recentes</option>
+            <option value="old">Mais antigos</option>
+            <option value="title">Por título</option>
+        </select>
+    </div>
+
+    <div class="blog-grid">
+        <div class="loading-indicator">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando posts...</p>
+        </div>
+    </div>
+
+    <!-- Blog detail overlay (shows only in view mode when JS triggers it) -->
+    <div class="blog-detail">
+        <div class="blog-detail-content">
+            <img class="blog-detail-image" src="" alt="Blog Detail" style="display:none;">
+            <span class="blog-category" style="display:none;"></span>
+            <h1 class="blog-title"></h1>
+            <div class="blog-meta" style="margin-bottom:20px;display:none;">
+                <span class="blog-date"></span>
+            </div>
+            <div class="share-buttons" style="display:none;">
+                <button class="share-btn" data-platform="whatsapp" title="Compartilhar no WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button class="share-btn" data-platform="facebook" title="Compartilhar no Facebook">
+                    <i class="fab fa-facebook"></i>
+                </button>
+                <button class="share-btn" data-platform="twitter" title="Compartilhar no Twitter">
+                    <i class="fab fa-twitter"></i>
+                </button>
+                <button class="share-btn" data-platform="copy" title="Copiar Link">
+                    <i class="fas fa-link"></i>
+                </button>
+            </div>
+            <div class="blog-content-full"></div>
+        </div>
+    </div>
+    <button class="close-btn" aria-label="Fechar visualização do post">&times;</button>
+
+    <footer class="bg-dark">
+        <div class="text-center">
+            <p class="mb-0" style="font-size: 16px;">
+                <span class="d-block d-md-inline">Powered by </span>
+                <a href="https://fossioforce.com.br" target="_blank" class="fossio-force-link">FOSSIO FORCE  </a>
+                <span class="d-block d-md-inline">&copy; 2024 Todos os direitos reservados.</span>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
